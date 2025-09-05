@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rumah Kopi R3 - Login</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #004d4d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+    }
+    .login-container h2 {
+      margin-bottom: 20px;
+      color: #004d4d;
+    }
+    .login-container input {
+      width: 80%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 10px;
+      background: #1e73be;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .login-container button:hover {
+      background: #145a96;
+    }
+    .message {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>Rumah Kopi R3</h2>
+    <input type="text" id="username" placeholder="User ID">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="result" class="message"></p>
+  </div>
+
+  <script>
+  async function login() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+    const result = document.getElementById("result");
+
+    if (!user || !pass) {
+      result.innerText = "Isi User ID & Password!";
+      return;
+    }
+
+    const url = "https://script.google.com/macros/s/AKfycbz21TyyJOPAvoAB3bi4mv9QIPuK9S3AddK7LJW4dhwuP18hPKyuK9cqbnjzdTTLNLBO0A/exec"
+      + "?action=login"
+      + "&username=" + encodeURIComponent(user)
+      + "&password=" + encodeURIComponent(pass);
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      result.innerText = data.message;
+
+      if (data.success) {
+		  localStorage.setItem("isLoggedIn", "true");
+		  localStorage.setItem("username", user); // simpan username
+		  window.location.href = "dashboard.html";
+		}
+    } catch (error) {
+      result.innerText = "Koneksi gagal!";
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rumah Kopi R3 - Pengeluaran</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
+    header {
+      background: #004d4d;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav {
+      background: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    nav a { color: white; text-decoration: none; font-weight: bold; padding: 6px 12px; border-radius: 4px; }
+    nav a:hover { background: #555; }
+    .form-container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h2 { margin-bottom: 20px; color: #333; }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #218838; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Rumah Kopi R3</h1>
+    <div>Hi: <span id="username">User</span></div>
+  </header>
+  <nav>
+    <a href="dashboard.html">Kasir</a>
+    <a href="pengeluaran.html">Pengeluaran</a>
+    <a href="laporan.html">Laporan</a>
+    <a href="#" onclick="logout()">Keluar</a>
+  </nav>
+
+  <div class="form-container">
+    <h2>Input Pengeluaran</h2>
+    <input type="number" id="nominal" placeholder="Nominal Pengeluaran">
+    <textarea id="deskripsi" placeholder="Deskripsi Pengeluaran"></textarea>
+    <button id="savePengeluaran">Simpan</button>
+  </div>
+
+  <script>
+    window.onload = () => {
+      // Cek login
+      if (!localStorage.getItem("isLoggedIn")) {
+        window.location.href = "login.html";
+      }
+
+      // Tampilkan nama user
+      document.getElementById("username").textContent = localStorage.getItem("username") || "User";
+
+      // Tombol Simpan Pengeluaran
+      document.getElementById("savePengeluaran").addEventListener("click", async () => {
+        const nominal = document.getElementById("nominal").value.trim();
+        const deskripsi = document.getElementById("deskripsi").value.trim();
+
+        if (!nominal || !deskripsi) {
+          alert("Isi semua data pengeluaran!");
+          return;
+        }
+
+        const url = "https://script.google.com/macros/s/AKfycbz21TyyJOPAvoAB3bi4mv9QIPuK9S3AddK7LJW4dhwuP18hPKyuK9cqbnjzdTTLNLBO0A/exec";
+        const params = `?action=tambahPengeluaran&nominal=${encodeURIComponent(nominal)}&deskripsi=${encodeURIComponent(deskripsi)}`;
+
+        try {
+          const res = await fetch(url + params);
+          const data = await res.json();
+
+          if (data.success) {
+            alert("Pengeluaran berhasil ditambahkan!");
+            document.getElementById("nominal").value = "";
+            document.getElementById("deskripsi").value = "";
+          } else {
+            alert(data.message);
+          }
+        } catch (error) {
+          alert("Terjadi kesalahan koneksi!");
+        }
+      });
+    };
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("username");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

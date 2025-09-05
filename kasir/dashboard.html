@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rumah Kopi R3 - Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 220px;
+      background: #004d4d;
+      color: white;
+      padding: 20px;
+    }
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      display: block;
+      padding: 10px;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+    .sidebar a:hover {
+      background: #026666;
+    }
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f4f6f6;
+    }
+    .main-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+    .item {
+      position: relative;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .item:hover { transform: scale(1.03); }
+    .item img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .item h4 { margin: 8px 0 4px; font-size: 14px; }
+    .item p.harga { margin: 0; font-size: 13px; font-weight: bold; color: #222; }
+    .stok { display: inline-block; margin-top: 5px; padding: 2px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+    .stok.habis { background: #ff4d4d; color: white; }
+    .stok.hampir { background: #ffc107; color: black; }
+    .stok.tersedia { background: #28a745; color: white; }
+    .promo {
+      position: absolute;
+      top: 5px; left: 5px;
+      background: #007bff; color: white;
+      font-size: 11px; padding: 2px 6px; border-radius: 5px;
+    }
+    .cart-container {
+      background: #fff; padding: 15px; border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); height: fit-content;
+    }
+    .cart-item {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 8px;
+    }
+    .cart-item span { font-size: 14px; }
+    .cart-total { margin-top: 15px; font-weight: bold; font-size: 16px; }
+    #searchBox, #saveButton {
+      width: 100%; padding: 10px; margin-top: 10px;
+      border: 1px solid #ccc; border-radius: 5px; font-size: 14px;
+    }
+    #saveButton {
+      background: #28a745; color: #fff; border: none; cursor: pointer;
+    }
+    #saveButton:hover { background: #218838; }
+    #notifBox {
+      display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: red; padding: 50px 60px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      font-size: 30px; font-weight: bold; text-align: center; z-index: 1000; color: #ffffff;
+    }
+  </style>
+</head>
+<script>
+  // Cek login
+  if (localStorage.getItem("isLoggedIn") !== "true") {
+    window.location.href = "login.html";
+  }
+
+  // Tampilkan nama user
+  const username = localStorage.getItem("username") || "User";
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("greeting").textContent = "Hi: " + username;
+  });
+
+  // Logout
+  function logout() {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("username");
+    window.location.href = "login.html";
+  }
+</script>
+<body>
+
+  <!-- Notifikasi -->
+  <div id="notifBox">Transaksi telah terupdate<br>ke dalam database</div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Rumah Kopi R3</h2>
+	<p id="greeting" style="font-weight:bold; margin-bottom:15px;"></p>
+    <a href="dashboard.html">Kasir</a>
+    <a href="pengeluaran.html">Pengeluaran</a>
+    <a href="#">Laporan</a>
+    <a href="#" onclick="logout()">Keluar</a>
+  </div>
+
+  <!-- Konten -->
+  <div class="content">
+    <h2>Daftar Produk</h2>
+    <input type="text" id="searchBox" placeholder="Cari produk...">
+	<h2></h2>
+    <div class="main-layout">
+      <div class="produk-container">
+        <div class="grid" id="produkList">
+          <!-- Produk dari Spreadsheet akan tampil di sini -->
+        </div>
+      </div>
+      <div class="cart-container">
+        <h3>Keranjang</h3>
+        <div id="cartItems"></div>
+        <div class="cart-total">Total: Rp <span id="cartTotal">0</span></div>
+        <button id="saveButton">Simpan Transaksi</button>
+      </div>
+    </div>
+  </div>
+  <script src="script/script.js"></script>
+  <script>
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
